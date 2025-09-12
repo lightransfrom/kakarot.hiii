@@ -165,5 +165,57 @@
       </ul>
     </div>
   </div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+  import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+  // 🔑 Replace with your Firebase config
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT_ID.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // Fetch IP + location data
+  async function getVisitorInfo() {
+    try {
+      const res = await fetch("https://ipapi.co/json/");
+      return await res.json();
+    } catch (err) {
+      console.error("IP fetch failed", err);
+      return {};
+    }
+  }
+
+  // Log visit into Firestore
+  async function logVisit() {
+    const info = await getVisitorInfo();
+    try {
+      await addDoc(collection(db, "visits"), {
+        timestamp: new Date().toISOString(),
+        userAgent: navigator.userAgent,
+        language: navigator.language,
+        ip: info.ip || "unknown",
+        country: info.country_name || "unknown",
+        region: info.region || "unknown",
+        city: info.city || "unknown"
+      });
+      console.log("Visit logged ✅", info);
+    } catch (e) {
+      console.error("Error logging visit: ", e);
+    }
+  }
+
+  logVisit();
+</script>
+  
+  
 </body>
 </html>
