@@ -167,23 +167,26 @@
   </div>
 
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-  import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+  // Import needed Firebase modules
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+  import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 
-  // 🔑 Replace with your Firebase config
+  // ✅ Your Firebase config (from console)
   const firebaseConfig = {
-    apiKey: "AIzaSyCmlOO8zFfz45HihzOX_ybXX3sdNQ7UK70",
-    authDomain: "white-ghost-7.firebaseapp.com",
-    projectId: "white-ghost-7",
-    storageBucket: "white-ghost-7.firebasestorage.app",
-    messagingSenderId: "139813412094",
-    appId: "1:139813412094:web:578556fe896707685bd9af"
+    apiKey: "AIzaSyCiE2GRXcshgA28TQXh4Ihcu2Eq4S-ZP6w",
+    authDomain: "kakarot-hiii.firebaseapp.com",
+    projectId: "kakarot-hiii",
+    storageBucket: "kakarot-hiii.firebasestorage.app",
+    messagingSenderId: "655149022948",
+    appId: "1:655149022948:web:d4fe72d8c361d91d9236f1",
+    measurementId: "G-R6ZWQ41W4C"
   };
 
+  // Initialize Firebase + Firestore
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
-  // Fetch IP + location data
+  // 🔎 Get visitor IP + location
   async function getVisitorInfo() {
     try {
       const res = await fetch("https://ipapi.co/json/");
@@ -194,7 +197,7 @@
     }
   }
 
-  // Log visit into Firestore
+  // ✍️ Log visit into Firestore
   async function logVisit() {
     const info = await getVisitorInfo();
     try {
@@ -215,7 +218,6 @@
 
   logVisit();
 </script>
-  
-  
+
 </body>
 </html>
