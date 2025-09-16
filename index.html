@@ -197,18 +197,41 @@
     }
   }
 
+  // 📱 Extract device model from UserAgent (e.g. "SM-M215F")
+  function getDeviceModel(userAgent) {
+    const match = userAgent.match(/SM-[A-Z0-9]+/i) || 
+                  userAgent.match(/Pixel\s[0-9a-zA-Z]+/i) ||
+                  userAgent.match(/iPhone|iPad|iPod/i) ||
+                  userAgent.match(/Redmi\s[0-9a-zA-Z]+/i) ||
+                  userAgent.match(/OnePlus\s[0-9a-zA-Z]+/i);
+    return match ? match[0] : "unknown";
+  }
+
   // ✍️ Log visit into Firestore
   async function logVisit() {
     const info = await getVisitorInfo();
+    const ua = navigator.userAgent;
     try {
       await addDoc(collection(db, "visits"), {
         timestamp: new Date().toISOString(),
-        userAgent: navigator.userAgent,
-        language: navigator.language,
         ip: info.ip || "unknown",
         country: info.country_name || "unknown",
         region: info.region || "unknown",
-        city: info.city || "unknown"
+        city: info.city || "unknown",
+        isp: info.org || "unknown",
+        timezone: info.timezone || "unknown",
+        latitude: info.latitude || null,
+        longitude: info.longitude || null,
+        userAgent: ua,
+        platform: navigator.platform,
+        deviceMemory: navigator.deviceMemory || "unknown",
+        cpuCores: navigator.hardwareConcurrency || "unknown",
+        screen: `${window.screen.width}x${window.screen.height}`,
+        colorDepth: window.screen.colorDepth,
+        language: navigator.language,
+        referrer: document.referrer || "direct",
+        deviceType: /Mobi|Android/i.test(ua) ? "Mobile" : "Desktop",
+        deviceModel: getDeviceModel(ua)
       });
       console.log("Visit logged ✅", info);
     } catch (e) {
